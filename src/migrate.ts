@@ -4,4 +4,4 @@ import { Database } from "bun:sqlite";
 
 const sqlite = new Database("./data/BOT.db");
 const db = drizzle(sqlite);
-await migrate(db, { migrationsFolder: "./src/drizzle" });
+await migrate(db, { migrationsFolder: "./drizzle" });
