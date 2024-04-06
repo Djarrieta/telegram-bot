@@ -1,14 +1,35 @@
+import axios from "axios";
+import { eq } from "drizzle-orm";
+import { createWriteStream } from "node:fs";
 import { Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
-import * as schema from "./schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import * as schema from "./schema";
 
 const bot = new Telegraf(process.env.BOT_TOKEN || "");
+bot.on(message("document"), async (ctx) => {
+	try {
+		const { file_id: fileId } = ctx.update.message.document;
+		const fileUrl = await ctx.telegram.getFileLink(fileId);
+		const response = await axios.get(fileUrl.toString(), {
+			responseType: "stream",
+		});
+
+		await new Promise<void>((resolve, reject) => {
+			response.data
+				.pipe(createWriteStream("./data/temp.pdf"))
+				.on("finish", resolve)
+				.on("error", reject);
+		});
+
+		await ctx.reply("File saved.");
+	} catch (error) {
+		console.error(error);
+	}
+});
 
 bot.on(message("text"), async (ctx) => {
-	const userId = ctx.message.chat.id.toString();
-
+	const userId = ctx.update.message.from.id.toString();
 	const user = await db
 		.select()
 		.from(schema.users)
