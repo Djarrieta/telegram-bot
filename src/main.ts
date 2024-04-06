@@ -8,10 +8,13 @@ const bot = new Telegraf(process.env.BOT_TOKEN || "");
 
 bot.on(message("text"), async (ctx) => {
 	const userId = ctx.message.chat.id.toString();
-	const users = await db.select().from(schema.users);
-	const user = users.find((u) => u.id === userId);
 
-	if (!user) {
+	const user = await db
+		.select()
+		.from(schema.users)
+		.where(eq(schema.users.id, userId));
+
+	if (!user.length) {
 		await ctx.reply(`User ${userId} not valid.`);
 		return;
 	}
@@ -25,6 +28,7 @@ bot.on(message("text"), async (ctx) => {
 
 	const result = await db.select().from(schema.notes);
 	console.log(result);
+
 	await ctx.reply(`Note "${ctx.message.text}" saved.`);
 });
 
