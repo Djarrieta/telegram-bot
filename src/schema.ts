@@ -1,7 +1,14 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const movies = sqliteTable("movies", {
+export const users = sqliteTable("users", {
+	id: text("id").primaryKey(),
+	name: text("name"),
+});
+
+export const notes = sqliteTable("notes", {
 	id: integer("id").primaryKey(),
-	title: text("name"),
-	releaseYear: integer("release_year"),
+	description: text("description"),
+	userId: text("userId")
+		.notNull()
+		.references(() => users.id),
 });

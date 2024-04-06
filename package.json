@@ -3,9 +3,10 @@
   "module": "main.ts",
   "type": "module",
   "scripts": {
-    "db:create":"drizzle-kit generate:sqlite --config drizzle.config.ts",
-    "db:migrate":"bun ./src/migrate.ts",
-    "start":"bun ./src/main.ts"
+    "DBCreate":"drizzle-kit generate:sqlite --config drizzle.config.ts",
+    "DBMigrate":"bun ./src/migrate.ts",
+    "start":"bun ./src/main.ts",
+    "seed":"bun ./src/seed.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
