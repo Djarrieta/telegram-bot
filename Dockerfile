@@ -3,9 +3,9 @@ FROM oven/bun
 # Set the timezone to Colombia (GMT-5)
 ENV TZ=America/Bogota
 
-WORKDIR /app
-COPY . /app
-VOLUME ./data /app/data 
+WORKDIR .
+COPY . .
+VOLUME ./data ./data 
 
 # Update the system packages and install the timezone data package
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
