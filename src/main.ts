@@ -32,7 +32,6 @@ bot.on(message("document"), async (ctx) => {
 
 bot.on(message("photo"), async (ctx) => {
 	try {
-		console.log(ctx.update.message.photo[1].file_id);
 		const { file_id: fileId, file_unique_id: fileName } =
 			ctx.update.message.photo[1];
 

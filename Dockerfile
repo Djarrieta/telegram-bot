@@ -5,7 +5,6 @@ ENV TZ=America/Bogota
 
 WORKDIR .
 COPY . .
-VOLUME ./data ./data 
 
 # Update the system packages and install the timezone data package
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
