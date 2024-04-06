@@ -7,9 +7,11 @@ import { db } from "./db";
 import * as schema from "./schema";
 
 const bot = new Telegraf(process.env.BOT_TOKEN || "");
+
 bot.on(message("document"), async (ctx) => {
 	try {
-		const { file_id: fileId } = ctx.update.message.document;
+		const { file_id: fileId, file_name: fileName } =
+			ctx.update.message.document;
 		const fileUrl = await ctx.telegram.getFileLink(fileId);
 		const response = await axios.get(fileUrl.toString(), {
 			responseType: "stream",
@@ -17,7 +19,31 @@ bot.on(message("document"), async (ctx) => {
 
 		await new Promise<void>((resolve, reject) => {
 			response.data
-				.pipe(createWriteStream("./data/temp.pdf"))
+				.pipe(createWriteStream(`./data/temp/${fileName}`))
+				.on("finish", resolve)
+				.on("error", reject);
+		});
+
+		await ctx.reply("File saved.");
+	} catch (error) {
+		console.error(error);
+	}
+});
+
+bot.on(message("photo"), async (ctx) => {
+	try {
+		console.log(ctx.update.message.photo[1].file_id);
+		const { file_id: fileId, file_unique_id: fileName } =
+			ctx.update.message.photo[1];
+
+		const fileUrl = await ctx.telegram.getFileLink(fileId);
+		const response = await axios.get(fileUrl.toString(), {
+			responseType: "stream",
+		});
+
+		await new Promise<void>((resolve, reject) => {
+			response.data
+				.pipe(createWriteStream(`./data/temp/${fileName}.jpg`))
 				.on("finish", resolve)
 				.on("error", reject);
 		});
