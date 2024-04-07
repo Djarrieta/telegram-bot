@@ -32,8 +32,11 @@ bot.on(message("document"), async (ctx) => {
 
 bot.on(message("photo"), async (ctx) => {
 	try {
-		const { file_id: fileId, file_unique_id: fileName } =
-			ctx.update.message.photo[1];
+		const biggerPhoto = ctx.update.message.photo.sort(
+			(a, b) => Number(b.file_size) - Number(a.file_size)
+		)[0];
+
+		const { file_id: fileId, file_unique_id: fileName } = biggerPhoto;
 
 		const fileUrl = await ctx.telegram.getFileLink(fileId);
 		const response = await axios.get(fileUrl.toString(), {
